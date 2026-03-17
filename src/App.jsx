@@ -240,7 +240,7 @@ export default function LUNXApp() {
             <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{browsingNode.offer}</p>
             <div className="flex gap-3 mt-5">
                 <button onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} className="bg-slate-900 text-white text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg">Select</button>
-                <button onClick={() => setSubView('list'); setBrowsingNode(null);} className="bg-slate-100 text-slate-400 text-[9px] font-black px-6 py-3 rounded-2xl uppercase">Close</button>
+                <button onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); } ...
             </div>
           </div>
         </div>
