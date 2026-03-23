@@ -4,7 +4,7 @@ import {
   Search, Home, Store, Ticket, Plus, Zap, TrendingUp, Clock, Utensils
 } from "lucide-react";
 
-// GLOBAL ASSET REPOSITORY - SHARED ACROSS ALL SCREENS
+// GLOBAL ASSET REPOSITORY
 const IMAGE_MAP = {
   BAGELMAN: "https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=800&q=80",
   BINCHO: "https://images.unsplash.com/photo-1534422298391-e4f8c170db06?auto=format&fit=crop&w=800&q=80",
@@ -68,12 +68,16 @@ export default function LUNXApp() {
     if (!mapRef.current || !window.google) return;
     const map = new window.google.maps.Map(mapRef.current, {
       center: { lat: 50.8225, lng: -0.1372 }, zoom: 15, disableDefaultUI: true,
-      styles: [{ featureType: "all", elementType: "labels.text.fill", textColor: "#ffffff" }]
+      styles: [
+        { featureType: "all", elementType: "labels.text.fill", textColor: "#ffffff" },
+        { featureType: "water", elementType: "geometry", color: "#060a13" },
+        { featureType: "landscape", elementType: "geometry", color: "#0a0f1a" }
+      ]
     });
     ALL_VENUES.forEach(v => {
       new window.google.maps.Marker({
         position: { lat: v.lat, lng: v.lng }, map: map,
-        icon: { path: window.google.maps.SymbolPath.CIRCLE, fillColor: '#10b981', fillOpacity: 1, scale: 6 }
+        icon: { path: window.google.maps.SymbolPath.CIRCLE, fillColor: '#10b981', fillOpacity: 1, scale: 6, strokeColor: '#ffffff', strokeWeight: 2 }
       }).addListener("click", () => setBrowsingNode(v));
     });
   };
@@ -102,7 +106,7 @@ export default function LUNXApp() {
   return (
     <div className="min-h-screen bg-[#060a13] text-slate-200 font-sans antialiased relative overflow-x-hidden">
       
-      {/* HEADER: Pointer-events wrapper fix */}
+      {/* HEADER: Z-index and pointer-events auto fix */}
       <div className="fixed top-6 left-0 right-0 px-6 flex justify-between items-center z-[11000] pointer-events-none">
         <button onClick={() => setShowControl(true)} className="h-10 w-10 bg-slate-900/90 rounded-xl flex items-center justify-center border border-white/10 text-emerald-500 backdrop-blur-md shadow-xl pointer-events-auto active:scale-95 transition-transform"><LayoutGrid size={18}/></button>
         <div className="bg-slate-900/90 px-4 py-1.5 rounded-lg border border-white/10 flex items-center gap-2 backdrop-blur-md shadow-xl pointer-events-auto">
@@ -117,9 +121,9 @@ export default function LUNXApp() {
         </button>
       </div>
 
-      {/* PROFILE OVERLAY */}
+      {/* PROFILE OVERLAY: Slides on top correctly */}
       {isProfileOpen && (
-        <div className="fixed inset-0 bg-[#060a13] z-[10000] p-8 pt-32 animate-in slide-in-from-right duration-300 overflow-y-auto">
+        <div className="fixed inset-0 bg-[#060a13] z-[10500] p-8 pt-32 animate-in slide-in-from-right duration-300 overflow-y-auto">
           <div className="max-w-xs mx-auto text-center space-y-8 pb-32">
             <div className="w-20 h-20 bg-emerald-500 rounded-full mx-auto flex items-center justify-center text-slate-900 text-2xl font-black shadow-2xl">A</div>
             <h2 className="text-2xl font-black uppercase text-white tracking-tighter italic">Alex</h2>
@@ -138,114 +142,94 @@ export default function LUNXApp() {
 
       {/* MAIN CONTENT AREA */}
       <main className={`max-w-md mx-auto p-6 pt-24 pb-32 transition-all duration-300 ${isProfileOpen ? 'blur-sm opacity-50 pointer-events-none' : 'opacity-100'}`}>
-          {activeTab === 'home' && (
+          {mode === 'employee' ? (
             <div className="space-y-8 animate-in fade-in">
-              <div className="text-center py-6">
-                <span className="text-sm font-black text-emerald-500 uppercase tracking-[0.25em]">Your nosh awaits</span>
-                <div className="text-6xl font-black text-white my-2 tracking-tighter">£{balance.toFixed(2)}</div>
-              </div>
-              <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-                {ALL_VENUES.map(v => (
-                  <div key={v.id} onClick={() => setBrowsingNode(v)} className="flex-none w-24 cursor-pointer active:scale-95 hover:opacity-80 transition-all">
-                    <div className="w-20 h-20 rounded-[2rem] overflow-hidden border border-white/10 shadow-lg mb-2 mx-auto bg-slate-900">
-                      <img src={v.img} className="w-full h-full object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} alt="" />
-                    </div>
-                    <p className="text-[8px] font-black text-center uppercase tracking-tighter text-slate-400 truncate px-1">{v.name}</p>
+              {activeTab === 'home' && (
+                <>
+                  <div className="text-center py-6">
+                    <span className="text-sm font-black text-emerald-500 uppercase tracking-[0.25em]">Your nosh awaits</span>
+                    <div className="text-6xl font-black text-white my-2 tracking-tighter">£{balance.toFixed(2)}</div>
                   </div>
-                ))}
-              </div>
-              <div className="p-8 rounded-[3rem] bg-emerald-500 shadow-2xl flex items-center justify-between cursor-pointer active:scale-95 transition-transform" onClick={() => setSelectedNode(ALL_VENUES[0])}>
-                <div><p className="text-slate-900 font-black text-xs uppercase tracking-tighter leading-none">Scan to Pay</p></div>
-                <div className="bg-white/20 p-4 rounded-3xl"><Camera size={32} className="text-slate-900" /></div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'discover' && (
-            <div className="space-y-6 animate-in fade-in">
-              <h2 className="text-3xl font-black uppercase tracking-tighter text-white italic px-2">Find Food</h2>
-              <div className="grid grid-cols-2 gap-4 pb-12">
-                {ALL_VENUES.map(v => (
-                  <div key={v.id} className="bg-slate-900 rounded-[2.5rem] overflow-hidden border border-white/5 shadow-xl cursor-pointer active:scale-95 transition-transform" onClick={() => setBrowsingNode(v)}>
-                    <img src={v.img} className="h-32 w-full object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} alt="" />
-                    <div className="p-4"><p className="text-[10px] font-black text-white uppercase truncate">{v.name}</p></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'deals' && (
-            <div className="space-y-6 animate-in fade-in">
-              <h2 className="text-3xl font-black uppercase tracking-tighter text-white px-2 italic">Live Deals</h2>
-              <div className="space-y-4 pb-12">
-                {ALL_VENUES.map(v => (
-                  <div key={v.id} className="bg-slate-900 p-6 rounded-[2.5rem] border border-white/5 flex items-center gap-5 cursor-pointer active:scale-95 transition-transform" onClick={() => setBrowsingNode(v)}>
-                     <div className="h-12 w-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500"><Ticket size={24}/></div>
-                     <div className="flex-1 overflow-hidden"><p className="text-[11px] font-black text-white uppercase truncate mb-1">{v.offer}</p><p className="text-[9px] text-slate-500 uppercase tracking-widest">{v.name}</p></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'venues' && (
-            <div className="space-y-6 animate-in fade-in">
-                <div className="flex justify-between items-center px-2">
-                    <h2 className="text-3xl font-black uppercase tracking-tighter text-white italic">Brighton</h2>
-                    <div className="bg-slate-900 p-1 rounded-xl flex border border-white/5">
-                        <button onClick={()=>setSubView('map')} className={`px-4 py-2 rounded-lg text-[8px] font-black uppercase ${subView==='map'?'bg-white text-black':'text-slate-500'}`}>Map</button>
-                        <button onClick={()=>setSubView('list')} className={`px-4 py-2 rounded-lg text-[8px] font-black uppercase ${subView==='list'?'bg-white text-black':'text-slate-500'}`}>List</button>
-                    </div>
-                </div>
-                {subView === 'list' && (
-                  <div className="space-y-3 pb-12">
-                    {ALL_VENUES.map(v => (
-                      <div key={v.id} className="bg-slate-900 p-5 rounded-[2rem] flex items-center gap-4 border border-white/5 cursor-pointer active:scale-95 transition-transform" onClick={() => setBrowsingNode(v)}>
-                        <img src={v.img} className="w-14 h-14 rounded-2xl object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} />
-                        <div className="flex-1"><p className="text-[11px] font-black text-white uppercase truncate">{v.name}</p></div>
-                        <ChevronRight size={16} className="text-slate-700" />
+                  <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                    {ALL_VENUES.slice(0, 8).map(v => (
+                      <div key={v.id} onClick={() => setBrowsingNode(v)} className="flex-none w-24 cursor-pointer active:scale-95 transition-all">
+                        <div className="w-20 h-20 rounded-[2rem] overflow-hidden border border-white/10 shadow-lg mb-2 mx-auto bg-slate-900">
+                          <img src={v.img} className="w-full h-full object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} alt="" />
+                        </div>
+                        <p className="text-[8px] font-black text-center uppercase tracking-tighter text-slate-400 truncate px-1">{v.name}</p>
                       </div>
                     ))}
                   </div>
-                )}
+                  <div className="p-8 rounded-[3rem] bg-emerald-500 shadow-2xl flex items-center justify-between cursor-pointer active:scale-95 transition-transform" onClick={() => setSelectedNode(ALL_VENUES[0])}>
+                    <div><p className="text-slate-900 font-black text-xs uppercase tracking-tighter leading-none">Scan to Pay</p></div>
+                    <div className="bg-white/20 p-4 rounded-3xl"><Camera size={32} className="text-slate-900" /></div>
+                  </div>
+                </>
+              )}
+
+              {activeTab === 'venues' && (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center px-2">
+                        <h2 className="text-3xl font-black uppercase tracking-tighter text-white italic">Brighton</h2>
+                        <div className="bg-slate-900 p-1 rounded-xl flex border border-white/5">
+                            <button onClick={()=>setSubView('map')} className={`px-4 py-2 rounded-lg text-[8px] font-black uppercase ${subView==='map'?'bg-white text-black':'text-slate-500'}`}>Map</button>
+                            <button onClick={()=>setSubView('list')} className={`px-4 py-2 rounded-lg text-[8px] font-black uppercase ${subView==='list'?'bg-white text-black':'text-slate-500'}`}>List</button>
+                        </div>
+                    </div>
+                    {subView === 'map' ? (
+                      <div className="h-[450px] w-full rounded-[3rem] overflow-hidden border border-white/10 relative">
+                        <div ref={mapRef} className="w-full h-full grayscale contrast-125" />
+                      </div>
+                    ) : (
+                      <div className="space-y-3 pb-12">
+                        {ALL_VENUES.map(v => (
+                          <div key={v.id} className="bg-slate-900 p-5 rounded-[2rem] flex items-center gap-4 border border-white/5 cursor-pointer active:scale-95" onClick={() => setBrowsingNode(v)}>
+                            <img src={v.img} className="w-14 h-14 rounded-2xl object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} />
+                            <div className="flex-1 font-black text-white uppercase text-[11px] truncate">{v.name}</div>
+                            <ChevronRight size={16} className="text-slate-700" />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-20 animate-in fade-in">
+              <h2 className="text-2xl font-black text-white uppercase italic">Partner Venue Portal</h2>
+              <div className="mt-10 p-10 bg-slate-900 rounded-[4rem] border border-white/10">
+                <p className="text-slate-500 text-[8px] uppercase font-black tracking-widest">Net Payout (5% Fee Applied)</p>
+                <p className="text-4xl font-black text-white mt-2">£0.00</p>
+              </div>
             </div>
           )}
       </main>
 
       {/* NAV */}
       <nav className={`fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-sm bg-slate-900/95 backdrop-blur-2xl p-2.5 rounded-full flex border border-white/10 shadow-2xl z-[12000] ${isProfileOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity'}`}>
-          {[{ id: 'home', icon: Home, label: 'Home' }, { id: 'discover', icon: Search, label: 'Find' }, { id: 'deals', icon: Ticket, label: 'Deals' }, { id: 'venues', icon: Store, label: 'Venues' }].map(tab => (
-            <button key={tab.id} onClick={() => { setIsProfileOpen(false); setActiveTab(tab.id); }} className={`flex-1 py-4 rounded-full flex flex-col items-center gap-2 transition-all ${activeTab === tab.id ? 'bg-white text-black shadow-xl' : 'text-slate-500'}`}><tab.icon size={20}/><span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span></button>
+          {[{ id: 'home', icon: Home, label: 'Home' }, { id: 'venues', icon: Store, label: 'Venues' }].map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 rounded-full flex flex-col items-center gap-2 transition-all ${activeTab === tab.id ? 'bg-white text-black' : 'text-slate-500'}`}><tab.icon size={20}/><span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span></button>
           ))}
       </nav>
+
+      {/* BROWSING MODAL */}
+      {browsingNode && (
+        <div className="fixed bottom-32 left-8 right-8 bg-white rounded-[3rem] p-8 flex flex-col shadow-2xl z-[13000] animate-in slide-in-from-bottom-20">
+            <p className="text-lg font-black uppercase text-slate-900 mb-1">{browsingNode.name}</p>
+            <p className="text-[10px] font-black text-emerald-600 uppercase mb-6">{browsingNode.offer}</p>
+            <div className="flex gap-4">
+                <button onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} className="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black uppercase text-[10px]">Pay Now</button>
+                <button onClick={() => setBrowsingNode(null)} className="px-6 bg-slate-100 text-slate-500 py-4 rounded-2xl font-black uppercase text-[10px]">X</button>
+            </div>
+        </div>
+      )}
 
       {/* PERSONA CONTROL */}
       {showControl && (
         <div className="fixed inset-0 z-[14000] bg-black/98 flex items-center justify-center p-8" onClick={() => setShowControl(false)}>
           <div className="w-full max-w-xs bg-white rounded-[4rem] p-10 space-y-4" onClick={e => e.stopPropagation()}>
-            {[{id: 'employee', label: 'Employee'}, {id: 'merchant', label: 'Partner Venue'}].map(m => (
-                <button key={m.id} onClick={() => { setMode(m.id); setIsProfileOpen(false); setShowControl(false); setActiveTab('home'); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] transition-colors ${mode === m.id ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900 hover:bg-slate-100'}`}>{m.label}</button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* BROWSING MODAL */}
-      {browsingNode && (
-        <div className="fixed bottom-32 left-8 right-8 bg-white rounded-[3rem] p-6 flex items-center gap-6 shadow-2xl z-[13000] border-2 border-slate-900 animate-in slide-in-from-bottom-20">
-          <div className="flex-1 overflow-hidden text-slate-900">
-            <p className="text-sm font-black uppercase truncate mb-1 italic">{browsingNode.name}</p>
-            <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{browsingNode.offer}</p>
-            <div className="flex gap-3 mt-5">
-                <button 
-                  onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} 
-                  className="bg-slate-900 text-white text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg active:scale-95 transition-all"
-                >
-                  Select
-                </button>
-                <button onClick={() => setBrowsingNode(null)} className="bg-slate-200 text-slate-900 text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg active:scale-95 transition-all">Back</button>
-              </div>
+            <button onClick={() => { setMode('employee'); setShowControl(false); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] ${mode === 'employee' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>Employee</button>
+            <button onClick={() => { setMode('merchant'); setShowControl(false); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] ${mode === 'merchant' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>Partner Venue</button>
           </div>
         </div>
       )}
@@ -255,13 +239,8 @@ export default function LUNXApp() {
         <div className="fixed inset-0 z-[15000] bg-[#060a13] p-10 flex flex-col items-center justify-center text-white text-center animate-in fade-in">
           <h2 className="text-3xl font-black mb-12 uppercase tracking-tighter italic">{selectedNode.name}</h2>
           <button 
-            onClick={() => { 
-              // 5% Transaction Fee logic is calculated here
-              setBalance(balance - 12); 
-              setShowSuccess(true); 
-              setSelectedNode(null); 
-            }} 
-            className="w-full py-10 bg-emerald-500 text-slate-900 font-black rounded-[3rem] uppercase text-xs tracking-widest shadow-2xl active:scale-95 transition-all"
+            onClick={() => { setBalance(balance - 12); setShowSuccess(true); setSelectedNode(null); }} 
+            className="w-full py-10 bg-emerald-500 text-slate-900 font-black rounded-[3rem] uppercase text-xs tracking-widest shadow-2xl"
           >
             Slide to Pay £12.00
           </button>
@@ -269,11 +248,12 @@ export default function LUNXApp() {
         </div>
       )}
 
+      {/* SUCCESS SCREEN */}
       {showSuccess && (
         <div className="fixed inset-0 z-[16000] bg-emerald-500 flex flex-col items-center justify-center text-white p-10 text-center animate-in zoom-in">
           <CheckCircle size={100} className="mb-10" />
           <h2 className="text-7xl font-black uppercase tracking-tighter leading-none mb-6 italic">Paid!</h2>
-          <button onClick={() => { setShowSuccess(false); setActiveTab('home'); }} className="w-full max-w-xs py-7 bg-slate-900 text-white font-black rounded-[2.5rem] uppercase text-[11px] mt-20 shadow-2xl active:scale-95 transition-all">Back Home</button>
+          <button onClick={() => { setShowSuccess(false); setActiveTab('home'); }} className="w-full max-w-xs py-7 bg-slate-900 text-white font-black rounded-[2.5rem] uppercase text-[11px] mt-20 shadow-2xl">Back Home</button>
         </div>
       )}
     </div>
