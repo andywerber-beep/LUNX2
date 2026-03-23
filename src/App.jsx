@@ -200,11 +200,12 @@ export default function LUNXApp() {
                             <button onClick={()=>setSubView('list')} className={`px-4 py-2 rounded-lg text-[8px] font-black uppercase ${subView==='list'?'bg-white text-black':'text-slate-500'}`}>List</button>
                         </div>
                     </div>
-                    {subView === 'map' ? (
-                      <div className="h-[450px] w-full rounded-[3rem] overflow-hidden border border-white/10 relative">
-                        <div ref={mapRef} className="w-full h-full grayscale contrast-125" />
-                      </div>
-                    ) : (
+                   {subView === 'map' ? (
+  <div className="h-[450px] w-full rounded-[3rem] overflow-hidden border border-white/10 relative">
+    {/* REMOVED grayscale and contrast-125 to restore standard Google colors */}
+    <div ref={mapRef} className="w-full h-full" />
+  </div>
+) : (
                       <div className="space-y-3 pb-12">
                         {ALL_VENUES.map(v => (
                           <div key={v.id} className="bg-slate-900 p-5 rounded-[2rem] flex items-center gap-4 border border-white/5 cursor-pointer active:scale-95" onClick={() => setBrowsingNode(v)}>
