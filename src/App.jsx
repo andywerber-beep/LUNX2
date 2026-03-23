@@ -147,7 +147,7 @@ export default function LUNXApp() {
               </div>
               <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {ALL_VENUES.map(v => (
-                  <div key={v.id} onClick={() => setBrowsingNode(v)} className="flex-none w-24">
+                  <div key={v.id} onClick={() => setBrowsingNode(v)} className="flex-none w-24 cursor-pointer hover:opacity-80 transition-all">
                     <div className="w-20 h-20 rounded-[2rem] overflow-hidden border border-white/10 shadow-lg mb-2 mx-auto bg-slate-900">
                       <img src={v.img} className="w-full h-full object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} alt="" />
                     </div>
