@@ -4,7 +4,6 @@ import {
   Search, Home, Store, Ticket, Plus, Zap, TrendingUp, Clock, Utensils
 } from "lucide-react";
 
-// GLOBAL ASSET REPOSITORY
 const IMAGE_MAP = {
   BAGELMAN: "https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=800&q=80",
   BINCHO: "https://images.unsplash.com/photo-1534422298391-e4f8c170db06?auto=format&fit=crop&w=800&q=80",
@@ -67,13 +66,12 @@ export default function LUNXApp() {
   const initMap = () => {
     if (!mapRef.current || !window.google) return;
     const map = new window.google.maps.Map(mapRef.current, {
-      center: { lat: 50.8225, lng: -0.1372 }, zoom: 15, disableDefaultUI: true,
-      styles: [{ featureType: "all", elementType: "labels.text.fill", textColor: "#ffffff" }]
+      center: { lat: 50.8225, lng: -0.1372 }, zoom: 15, disableDefaultUI: true
     });
     ALL_VENUES.forEach(v => {
       new window.google.maps.Marker({
         position: { lat: v.lat, lng: v.lng }, map: map,
-        icon: { path: window.google.maps.SymbolPath.CIRCLE, fillColor: '#10b981', fillOpacity: 1, scale: 6 }
+        icon: { path: window.google.maps.SymbolPath.CIRCLE, fillColor: '#10b981', fillOpacity: 1, scale: 7, strokeColor: 'white', strokeWeight: 2 }
       }).addListener("click", () => setBrowsingNode(v));
     });
   };
@@ -93,7 +91,7 @@ export default function LUNXApp() {
       <div className="min-h-screen bg-[#060a13] flex flex-col items-center justify-center p-8 text-center">
         <div className="w-20 h-20 bg-emerald-500 rounded-3xl mb-8 flex items-center justify-center shadow-2xl"><span className="text-3xl font-black text-slate-900">L</span></div>
         <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tighter italic">LUNX</h1>
-        <p className="text-emerald-500 font-bold text-[10px] tracking-widest uppercase mb-12 opacity-80 underline decoration-2 underline-offset-4">v6.2.0 | PITCH READY</p>
+        <p className="text-emerald-500 font-bold text-[10px] tracking-widest uppercase mb-12 opacity-80 underline decoration-2 underline-offset-4">v6.2.1 | PITCH READY</p>
         <button onClick={() => setView("app")} className="w-full max-w-xs py-5 bg-white text-black font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-xl">Launch</button>
       </div>
     );
@@ -102,15 +100,15 @@ export default function LUNXApp() {
   return (
     <div className="min-h-screen bg-[#060a13] text-slate-200 font-sans antialiased relative overflow-x-hidden">
       
-      {/* HEADER: Pointer-events auto for buttons only */}
+      {/* HEADER */}
       <div className="fixed top-6 left-0 right-0 px-6 flex justify-between items-center z-[11000] pointer-events-none">
-        <button onClick={() => setShowControl(true)} className="h-10 w-10 bg-slate-900/90 rounded-xl flex items-center justify-center border border-white/10 text-emerald-500 backdrop-blur-md shadow-xl pointer-events-auto active:scale-95 transition-transform"><LayoutGrid size={18}/></button>
-        <div className="bg-slate-900/90 px-4 py-1.5 rounded-lg border border-white/10 flex items-center gap-2 backdrop-blur-md shadow-xl pointer-events-auto">
+        <button onClick={() => setShowControl(true)} className="h-10 w-10 bg-slate-900/90 rounded-xl flex items-center justify-center border border-white/10 text-emerald-500 backdrop-blur-md pointer-events-auto active:scale-95 transition-transform"><LayoutGrid size={18}/></button>
+        <div className="bg-slate-900/90 px-4 py-1.5 rounded-lg border border-white/10 flex items-center gap-2 backdrop-blur-md pointer-events-auto">
             <Clock size={12} className="text-emerald-500" />
             <span className="text-xs font-black text-white tracking-widest">{timeString}</span>
         </div>
         <button 
-          onClick={(e) => { e.stopPropagation(); setIsProfileOpen(!isProfileOpen); }} 
+          onClick={() => setIsProfileOpen(!isProfileOpen)} 
           className={`h-10 w-10 rounded-full flex items-center justify-center border border-white/10 transition-all pointer-events-auto active:scale-95 ${isProfileOpen ? 'bg-emerald-500 text-black' : 'bg-slate-900/90 text-emerald-500'}`}
         >
             {isProfileOpen ? <X size={18}/> : <User size={18}/>}
@@ -119,7 +117,7 @@ export default function LUNXApp() {
 
       {/* PROFILE OVERLAY */}
       {isProfileOpen && (
-        <div className="fixed inset-0 bg-[#060a13] z-[10000] p-8 pt-32 animate-in slide-in-from-right duration-300 overflow-y-auto">
+        <div className="fixed inset-0 bg-[#060a13] z-[10500] p-8 pt-32 animate-in slide-in-from-right duration-300 overflow-y-auto">
           <div className="max-w-xs mx-auto text-center space-y-8 pb-32">
             <div className="w-20 h-20 bg-emerald-500 rounded-full mx-auto flex items-center justify-center text-slate-900 text-2xl font-black shadow-2xl">A</div>
             <h2 className="text-2xl font-black uppercase text-white tracking-tighter italic">Alex</h2>
@@ -200,12 +198,11 @@ export default function LUNXApp() {
                             <button onClick={()=>setSubView('list')} className={`px-4 py-2 rounded-lg text-[8px] font-black uppercase ${subView==='list'?'bg-white text-black':'text-slate-500'}`}>List</button>
                         </div>
                     </div>
-                   {subView === 'map' ? (
-  <div className="h-[450px] w-full rounded-[3rem] overflow-hidden border border-white/10 relative">
-    {/* REMOVED grayscale and contrast-125 to restore standard Google colors */}
-    <div ref={mapRef} className="w-full h-full" />
-  </div>
-) : (
+                    {subView === 'map' ? (
+                      <div className="h-[450px] w-full rounded-[3rem] overflow-hidden border border-white/10 relative">
+                        <div ref={mapRef} className="w-full h-full" />
+                      </div>
+                    ) : (
                       <div className="space-y-3 pb-12">
                         {ALL_VENUES.map(v => (
                           <div key={v.id} className="bg-slate-900 p-5 rounded-[2rem] flex items-center gap-4 border border-white/5 cursor-pointer active:scale-95" onClick={() => setBrowsingNode(v)}>
@@ -220,37 +217,37 @@ export default function LUNXApp() {
               )}
             </>
           ) : (
-            <div className="text-center py-20 animate-in fade-in">
-              <h2 className="text-2xl font-black text-white uppercase italic">Partner Venue Portal</h2>
-              <div className="mt-10 p-10 bg-slate-900 rounded-[4rem] border border-white/10">
-                <p className="text-slate-500 text-[8px] uppercase font-black tracking-widest">Net Payout (5% Fee Applied)</p>
-                <p className="text-4xl font-black text-white mt-2">£0.00</p>
+            <div className="space-y-8 animate-in fade-in">
+              <div className="text-center py-6">
+                <span className="text-sm font-black text-emerald-500 uppercase tracking-[0.25em]">Live Revenue</span>
+                <div className="text-6xl font-black text-white my-2 tracking-tighter italic">£1,420.50</div>
+                <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Net Payout after 5% LUNX fee</p>
+              </div>
+              <div className="bg-slate-900 p-8 rounded-[3rem] border border-white/5 space-y-6">
+                <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <p className="text-[10px] font-black text-white uppercase">Today's Covers</p>
+                  <p className="text-xl font-black text-emerald-500 italic">42</p>
+                </div>
+                <div className="space-y-4">
+                  <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Recent Activity</p>
+                  {["12:45 - £12.00", "12:38 - £8.50", "12:15 - £22.00"].map((log, i) => (
+                    <div key={i} className="flex justify-between text-[10px] font-bold text-white uppercase tracking-tighter">
+                      <span>Confirmed Payment</span>
+                      <span className="text-emerald-500">{log}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
       </main>
 
-      {/* NAV: 4-TAB NAVIGATION RESTORED */}
+      {/* NAV */}
       <nav className={`fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-sm bg-slate-900/95 backdrop-blur-2xl p-2.5 rounded-full flex border border-white/10 shadow-2xl z-[12000] ${isProfileOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity'}`}>
-          {[
-            { id: 'home', icon: Home, label: 'Home' },
-            { id: 'discover', icon: Search, label: 'Find' },
-            { id: 'deals', icon: Ticket, label: 'Deals' },
-            { id: 'venues', icon: Store, label: 'Venues' }
-          ].map(tab => (
-            <button key={tab.id} onClick={() => { setIsProfileOpen(false); setActiveTab(tab.id); }} className={`flex-1 py-4 rounded-full flex flex-col items-center gap-2 transition-all ${activeTab === tab.id ? 'bg-white text-black shadow-xl' : 'text-slate-500'}`}><tab.icon size={20}/><span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span></button>
+          {[{ id: 'home', icon: Home, label: 'Home' }, { id: 'discover', icon: Search, label: 'Find' }, { id: 'deals', icon: Ticket, label: 'Deals' }, { id: 'venues', icon: Store, label: 'Venues' }].map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 rounded-full flex flex-col items-center gap-2 transition-all ${activeTab === tab.id ? 'bg-white text-black shadow-xl' : 'text-slate-500'}`}><tab.icon size={20}/><span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span></button>
           ))}
       </nav>
-
-      {/* PERSONA CONTROL */}
-      {showControl && (
-        <div className="fixed inset-0 z-[14000] bg-black/98 flex items-center justify-center p-8" onClick={() => setShowControl(false)}>
-          <div className="w-full max-w-xs bg-white rounded-[4rem] p-10 space-y-4" onClick={e => e.stopPropagation()}>
-            <button onClick={() => { setMode('employee'); setShowControl(false); setActiveTab('home'); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] ${mode === 'employee' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>Employee</button>
-            <button onClick={() => { setMode('merchant'); setShowControl(false); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] ${mode === 'merchant' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>Partner Venue</button>
-          </div>
-        </div>
-      )}
 
       {/* BROWSING MODAL */}
       {browsingNode && (
@@ -258,19 +255,29 @@ export default function LUNXApp() {
             <p className="text-lg font-black uppercase text-slate-900 mb-1">{browsingNode.name}</p>
             <p className="text-[10px] font-black text-emerald-600 uppercase mb-6">{browsingNode.offer}</p>
             <div className="flex gap-4">
-                <button onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} className="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black uppercase text-[10px]">Pay Now</button>
+                <button onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} className="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black uppercase text-[10px]">Select</button>
                 <button onClick={() => setBrowsingNode(null)} className="px-6 bg-slate-100 text-slate-500 py-4 rounded-2xl font-black uppercase text-[10px]">X</button>
             </div>
         </div>
       )}
 
-      {/* PAYMENT AND SUCCESS SCREENS... */}
+      {/* PERSONA CONTROL */}
+      {showControl && (
+        <div className="fixed inset-0 z-[14000] bg-black/98 flex items-center justify-center p-8" onClick={() => setShowControl(false)}>
+          <div className="w-full max-w-xs bg-white rounded-[4rem] p-10 space-y-4" onClick={e => e.stopPropagation()}>
+            <button onClick={() => { setMode('employee'); setShowControl(false); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] ${mode === 'employee' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>Employee</button>
+            <button onClick={() => { setMode('merchant'); setShowControl(false); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] ${mode === 'merchant' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>Partner Venue</button>
+          </div>
+        </div>
+      )}
+
+      {/* PAYMENT SCREEN */}
       {selectedNode && (
         <div className="fixed inset-0 z-[15000] bg-[#060a13] p-10 flex flex-col items-center justify-center text-white text-center animate-in fade-in">
           <h2 className="text-3xl font-black mb-12 uppercase tracking-tighter italic">{selectedNode.name}</h2>
           <button 
             onClick={() => { setBalance(balance - 12); setShowSuccess(true); setSelectedNode(null); }} 
-            className="w-full py-10 bg-emerald-500 text-slate-900 font-black rounded-[3rem] uppercase text-xs tracking-widest shadow-2xl"
+            className="w-full py-10 bg-emerald-500 text-slate-900 font-black rounded-[3rem] uppercase text-xs tracking-widest shadow-2xl active:scale-95 transition-transform"
           >
             Slide to Pay £12.00
           </button>
@@ -278,6 +285,7 @@ export default function LUNXApp() {
         </div>
       )}
 
+      {/* SUCCESS SCREEN */}
       {showSuccess && (
         <div className="fixed inset-0 z-[16000] bg-emerald-500 flex flex-col items-center justify-center text-white p-10 text-center animate-in zoom-in">
           <CheckCircle size={100} className="mb-10" />
