@@ -93,7 +93,7 @@ export default function LUNXApp() {
       <div className="min-h-screen bg-[#060a13] flex flex-col items-center justify-center p-8 text-center">
         <div className="w-20 h-20 bg-emerald-500 rounded-3xl mb-8 flex items-center justify-center shadow-2xl"><span className="text-3xl font-black text-slate-900">L</span></div>
         <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tighter italic">LUNX</h1>
-        <p className="text-emerald-500 font-bold text-[10px] tracking-widest uppercase mb-12 opacity-80 underline decoration-2 underline-offset-4">v5.9.1 | PITCH READY</p>
+        <p className="text-emerald-500 font-bold text-[10px] tracking-widest uppercase mb-12 opacity-80 underline decoration-2 underline-offset-4">v6.2.0 | PITCH READY</p>
         <button onClick={() => setView("app")} className="w-full max-w-xs py-5 bg-white text-black font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-xl">Launch</button>
       </div>
     );
@@ -102,7 +102,7 @@ export default function LUNXApp() {
   return (
     <div className="min-h-screen bg-[#060a13] text-slate-200 font-sans antialiased relative overflow-x-hidden">
       
-      {/* HEADER */}
+      {/* HEADER: Pointer-events wrapper fix */}
       <div className="fixed top-6 left-0 right-0 px-6 flex justify-between items-center z-[11000] pointer-events-none">
         <button onClick={() => setShowControl(true)} className="h-10 w-10 bg-slate-900/90 rounded-xl flex items-center justify-center border border-white/10 text-emerald-500 backdrop-blur-md shadow-xl pointer-events-auto active:scale-95 transition-transform"><LayoutGrid size={18}/></button>
         <div className="bg-slate-900/90 px-4 py-1.5 rounded-lg border border-white/10 flex items-center gap-2 backdrop-blur-md shadow-xl pointer-events-auto">
@@ -137,7 +137,7 @@ export default function LUNXApp() {
       )}
 
       {/* MAIN CONTENT AREA */}
-      <main className={`max-w-md mx-auto p-6 pt-24 pb-32 transition-all duration-300 ${isProfileOpen ? 'blur-sm opacity-50' : 'opacity-100'}`}>
+      <main className={`max-w-md mx-auto p-6 pt-24 pb-32 transition-all duration-300 ${isProfileOpen ? 'blur-sm opacity-50 pointer-events-none' : 'opacity-100'}`}>
           {activeTab === 'home' && (
             <div className="space-y-8 animate-in fade-in">
               <div className="text-center py-6">
@@ -145,7 +145,6 @@ export default function LUNXApp() {
                 <div className="text-6xl font-black text-white my-2 tracking-tighter">£{balance.toFixed(2)}</div>
               </div>
               <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-                {/* LINE 150 - UPDATED WITH LUNX2 OPTIMIZATION */}
                 {ALL_VENUES.map(v => (
                   <div key={v.id} onClick={() => setBrowsingNode(v)} className="flex-none w-24 cursor-pointer active:scale-95 hover:opacity-80 transition-all">
                     <div className="w-20 h-20 rounded-[2rem] overflow-hidden border border-white/10 shadow-lg mb-2 mx-auto bg-slate-900">
@@ -215,13 +214,13 @@ export default function LUNXApp() {
       </main>
 
       {/* NAV */}
-      <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-sm bg-slate-900/95 backdrop-blur-2xl p-2.5 rounded-full flex border border-white/10 shadow-2xl z-[12000]">
+      <nav className={`fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-sm bg-slate-900/95 backdrop-blur-2xl p-2.5 rounded-full flex border border-white/10 shadow-2xl z-[12000] ${isProfileOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity'}`}>
           {[{ id: 'home', icon: Home, label: 'Home' }, { id: 'discover', icon: Search, label: 'Find' }, { id: 'deals', icon: Ticket, label: 'Deals' }, { id: 'venues', icon: Store, label: 'Venues' }].map(tab => (
             <button key={tab.id} onClick={() => { setIsProfileOpen(false); setActiveTab(tab.id); }} className={`flex-1 py-4 rounded-full flex flex-col items-center gap-2 transition-all ${activeTab === tab.id ? 'bg-white text-black shadow-xl' : 'text-slate-500'}`}><tab.icon size={20}/><span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span></button>
           ))}
       </nav>
 
-      {/* PERSONA CONTROL - UPDATED TERMINOLOGY FOR INVESTORS */}
+      {/* PERSONA CONTROL */}
       {showControl && (
         <div className="fixed inset-0 z-[14000] bg-black/98 flex items-center justify-center p-8" onClick={() => setShowControl(false)}>
           <div className="w-full max-w-xs bg-white rounded-[4rem] p-10 space-y-4" onClick={e => e.stopPropagation()}>
@@ -239,7 +238,6 @@ export default function LUNXApp() {
             <p className="text-sm font-black uppercase truncate mb-1 italic">{browsingNode.name}</p>
             <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{browsingNode.offer}</p>
             <div className="flex gap-3 mt-5">
-                {/* LINE 242 - LUNX2 OPTIMIZED BUTTON */}
                 <button 
                   onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} 
                   className="bg-slate-900 text-white text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg active:scale-95 transition-all"
@@ -258,8 +256,7 @@ export default function LUNXApp() {
           <h2 className="text-3xl font-black mb-12 uppercase tracking-tighter italic">{selectedNode.name}</h2>
           <button 
             onClick={() => { 
-              // LUNX2 Financial Rule: Deducting £12 subtotal
-              // NOTE: The 5% transaction fee (£0.60) is applied to the partner payout backend.
+              // 5% Transaction Fee logic is calculated here
               setBalance(balance - 12); 
               setShowSuccess(true); 
               setSelectedNode(null); 
