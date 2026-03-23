@@ -11,7 +11,6 @@ const IMAGE_MAP = {
   FALLBACK: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
 };
 
-// FULL 27 VENUE DATABASE RESTORED
 const ALL_VENUES = [
   { id: "O1", name: "The Flour Pot", lat: 50.8256, lng: -0.1396, category: "Bakery", offer: "Free Oat Milk Upgrade", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80" },
   { id: "O2", name: "Redroaster", lat: 50.8201, lng: -0.1352, category: "Lunch", offer: "10% Off Bowls", img: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=800&q=80" },
@@ -94,7 +93,7 @@ export default function LUNXApp() {
       <div className="min-h-screen bg-[#060a13] flex flex-col items-center justify-center p-8 text-center">
         <div className="w-20 h-20 bg-emerald-500 rounded-3xl mb-8 flex items-center justify-center shadow-2xl"><span className="text-3xl font-black text-slate-900">L</span></div>
         <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tighter italic">LUNX</h1>
-        <p className="text-emerald-500 font-bold text-[10px] tracking-widest uppercase mb-12 opacity-80 underline decoration-2 underline-offset-4">v6.2.2 | PITCH READY</p>
+        <p className="text-emerald-500 font-bold text-[10px] tracking-widest uppercase mb-12 opacity-80 underline decoration-2 underline-offset-4">v5.9.1 | PITCH READY</p>
         <button onClick={() => setView("app")} className="w-full max-w-xs py-5 bg-white text-black font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-xl">Launch</button>
       </div>
     );
@@ -103,7 +102,7 @@ export default function LUNXApp() {
   return (
     <div className="min-h-screen bg-[#060a13] text-slate-200 font-sans antialiased relative overflow-x-hidden">
       
-      {/* HEADER: HITBOX FIXED WITH POINTER-EVENTS */}
+      {/* HEADER */}
       <div className="fixed top-6 left-0 right-0 px-6 flex justify-between items-center z-[11000] pointer-events-none">
         <button onClick={() => setShowControl(true)} className="h-10 w-10 bg-slate-900/90 rounded-xl flex items-center justify-center border border-white/10 text-emerald-500 backdrop-blur-md shadow-xl pointer-events-auto active:scale-95 transition-transform"><LayoutGrid size={18}/></button>
         <div className="bg-slate-900/90 px-4 py-1.5 rounded-lg border border-white/10 flex items-center gap-2 backdrop-blur-md shadow-xl pointer-events-auto">
@@ -146,8 +145,9 @@ export default function LUNXApp() {
                 <div className="text-6xl font-black text-white my-2 tracking-tighter">£{balance.toFixed(2)}</div>
               </div>
               <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                {/* LINE 150 - UPDATED WITH LUNX2 OPTIMIZATION */}
                 {ALL_VENUES.map(v => (
-                  <div key={v.id} onClick={() => setBrowsingNode(v)} className="flex-none w-24 cursor-pointer hover:opacity-80 transition-all">
+                  <div key={v.id} onClick={() => setBrowsingNode(v)} className="flex-none w-24 cursor-pointer active:scale-95 hover:opacity-80 transition-all">
                     <div className="w-20 h-20 rounded-[2rem] overflow-hidden border border-white/10 shadow-lg mb-2 mx-auto bg-slate-900">
                       <img src={v.img} className="w-full h-full object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} alt="" />
                     </div>
@@ -155,7 +155,7 @@ export default function LUNXApp() {
                   </div>
                 ))}
               </div>
-              <div className="p-8 rounded-[3rem] bg-emerald-500 shadow-2xl flex items-center justify-between" onClick={() => setSelectedNode(ALL_VENUES[0])}>
+              <div className="p-8 rounded-[3rem] bg-emerald-500 shadow-2xl flex items-center justify-between cursor-pointer active:scale-95 transition-transform" onClick={() => setSelectedNode(ALL_VENUES[0])}>
                 <div><p className="text-slate-900 font-black text-xs uppercase tracking-tighter leading-none">Scan to Pay</p></div>
                 <div className="bg-white/20 p-4 rounded-3xl"><Camera size={32} className="text-slate-900" /></div>
               </div>
@@ -167,7 +167,7 @@ export default function LUNXApp() {
               <h2 className="text-3xl font-black uppercase tracking-tighter text-white italic px-2">Find Food</h2>
               <div className="grid grid-cols-2 gap-4 pb-12">
                 {ALL_VENUES.map(v => (
-                  <div key={v.id} className="bg-slate-900 rounded-[2.5rem] overflow-hidden border border-white/5 shadow-xl" onClick={() => setBrowsingNode(v)}>
+                  <div key={v.id} className="bg-slate-900 rounded-[2.5rem] overflow-hidden border border-white/5 shadow-xl cursor-pointer active:scale-95 transition-transform" onClick={() => setBrowsingNode(v)}>
                     <img src={v.img} className="h-32 w-full object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} alt="" />
                     <div className="p-4"><p className="text-[10px] font-black text-white uppercase truncate">{v.name}</p></div>
                   </div>
@@ -181,7 +181,7 @@ export default function LUNXApp() {
               <h2 className="text-3xl font-black uppercase tracking-tighter text-white px-2 italic">Live Deals</h2>
               <div className="space-y-4 pb-12">
                 {ALL_VENUES.map(v => (
-                  <div key={v.id} className="bg-slate-900 p-6 rounded-[2.5rem] border border-white/5 flex items-center gap-5" onClick={() => setBrowsingNode(v)}>
+                  <div key={v.id} className="bg-slate-900 p-6 rounded-[2.5rem] border border-white/5 flex items-center gap-5 cursor-pointer active:scale-95 transition-transform" onClick={() => setBrowsingNode(v)}>
                      <div className="h-12 w-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500"><Ticket size={24}/></div>
                      <div className="flex-1 overflow-hidden"><p className="text-[11px] font-black text-white uppercase truncate mb-1">{v.offer}</p><p className="text-[9px] text-slate-500 uppercase tracking-widest">{v.name}</p></div>
                   </div>
@@ -202,7 +202,7 @@ export default function LUNXApp() {
                 {subView === 'list' && (
                   <div className="space-y-3 pb-12">
                     {ALL_VENUES.map(v => (
-                      <div key={v.id} className="bg-slate-900 p-5 rounded-[2rem] flex items-center gap-4 border border-white/5" onClick={() => setBrowsingNode(v)}>
+                      <div key={v.id} className="bg-slate-900 p-5 rounded-[2rem] flex items-center gap-4 border border-white/5 cursor-pointer active:scale-95 transition-transform" onClick={() => setBrowsingNode(v)}>
                         <img src={v.img} className="w-14 h-14 rounded-2xl object-cover" onError={(e) => {e.target.src = IMAGE_MAP.FALLBACK}} />
                         <div className="flex-1"><p className="text-[11px] font-black text-white uppercase truncate">{v.name}</p></div>
                         <ChevronRight size={16} className="text-slate-700" />
@@ -221,12 +221,12 @@ export default function LUNXApp() {
           ))}
       </nav>
 
-      {/* PERSONA CONTROL */}
+      {/* PERSONA CONTROL - UPDATED TERMINOLOGY FOR INVESTORS */}
       {showControl && (
         <div className="fixed inset-0 z-[14000] bg-black/98 flex items-center justify-center p-8" onClick={() => setShowControl(false)}>
           <div className="w-full max-w-xs bg-white rounded-[4rem] p-10 space-y-4" onClick={e => e.stopPropagation()}>
             {[{id: 'employee', label: 'Employee'}, {id: 'merchant', label: 'Partner Venue'}].map(m => (
-                <button key={m.id} onClick={() => { setMode(m.id); setIsProfileOpen(false); setShowControl(false); setActiveTab('home'); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] ${mode === m.id ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>{m.label}</button>
+                <button key={m.id} onClick={() => { setMode(m.id); setIsProfileOpen(false); setShowControl(false); setActiveTab('home'); }} className={`w-full p-6 text-left text-[11px] font-black uppercase rounded-[2rem] transition-colors ${mode === m.id ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900 hover:bg-slate-100'}`}>{m.label}</button>
             ))}
           </div>
         </div>
@@ -239,17 +239,35 @@ export default function LUNXApp() {
             <p className="text-sm font-black uppercase truncate mb-1 italic">{browsingNode.name}</p>
             <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{browsingNode.offer}</p>
             <div className="flex gap-3 mt-5">
-                <button onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} className="bg-slate-900 text-white text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg">Select</button>
-                <button onClick={() => setBrowsingNode(null)} className="bg-slate-200 text-slate-900 text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg">Back</button>
+                {/* LINE 242 - LUNX2 OPTIMIZED BUTTON */}
+                <button 
+                  onClick={() => { setSelectedNode(browsingNode); setBrowsingNode(null); }} 
+                  className="bg-slate-900 text-white text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg active:scale-95 transition-all"
+                >
+                  Select
+                </button>
+                <button onClick={() => setBrowsingNode(null)} className="bg-slate-200 text-slate-900 text-[9px] font-black px-8 py-3 rounded-2xl uppercase shadow-lg active:scale-95 transition-all">Back</button>
               </div>
           </div>
         </div>
       )}
 
+      {/* PAYMENT SCREEN */}
       {selectedNode && (
         <div className="fixed inset-0 z-[15000] bg-[#060a13] p-10 flex flex-col items-center justify-center text-white text-center animate-in fade-in">
           <h2 className="text-3xl font-black mb-12 uppercase tracking-tighter italic">{selectedNode.name}</h2>
-          <button onClick={() => { setBalance(balance - 12); setShowSuccess(true); setSelectedNode(null); }} className="w-full py-10 bg-emerald-500 text-slate-900 font-black rounded-[3rem] uppercase text-xs tracking-widest shadow-2xl active:scale-95 transition-all">Slide to Pay £12.00</button>
+          <button 
+            onClick={() => { 
+              // LUNX2 Financial Rule: Deducting £12 subtotal
+              // NOTE: The 5% transaction fee (£0.60) is applied to the partner payout backend.
+              setBalance(balance - 12); 
+              setShowSuccess(true); 
+              setSelectedNode(null); 
+            }} 
+            className="w-full py-10 bg-emerald-500 text-slate-900 font-black rounded-[3rem] uppercase text-xs tracking-widest shadow-2xl active:scale-95 transition-all"
+          >
+            Slide to Pay £12.00
+          </button>
           <button onClick={()=>setSelectedNode(null)} className="mt-16 text-[10px] font-black text-slate-500 uppercase tracking-widest">Cancel</button>
         </div>
       )}
@@ -258,7 +276,7 @@ export default function LUNXApp() {
         <div className="fixed inset-0 z-[16000] bg-emerald-500 flex flex-col items-center justify-center text-white p-10 text-center animate-in zoom-in">
           <CheckCircle size={100} className="mb-10" />
           <h2 className="text-7xl font-black uppercase tracking-tighter leading-none mb-6 italic">Paid!</h2>
-          <button onClick={() => { setShowSuccess(false); setActiveTab('home'); }} className="w-full max-w-xs py-7 bg-slate-900 text-white font-black rounded-[2.5rem] uppercase text-[11px] mt-20 shadow-2xl">Back Home</button>
+          <button onClick={() => { setShowSuccess(false); setActiveTab('home'); }} className="w-full max-w-xs py-7 bg-slate-900 text-white font-black rounded-[2.5rem] uppercase text-[11px] mt-20 shadow-2xl active:scale-95 transition-all">Back Home</button>
         </div>
       )}
     </div>
